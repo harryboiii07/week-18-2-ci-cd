@@ -29,6 +29,19 @@ jobs :
       - name : verify pushed image
         run : docker pull harryboiii07/ci-cd-testing:latest 
 
+      - name : Deploy to EC2
+        uses : appleboy/ssh-action@master
+        with :
+          host : ${{ secrets.SSH_HOST }}
+          username : ${{ secrets.SSH_USERNAME }}
+          key : ${{ secrets.SSH_KEY }}
+          script : |
+            sudo docker pull harryboiii07/ci-cd-testing:latest
+            sudo docker stop ci-cd-testing || true
+            sudo docker rm ci-cd-testing || true
+            sudo docker run -d --name ci-cd-testing -p 3005:3000 harryboiii07/ci-cd-testing:latest
+
+
         
 
 
